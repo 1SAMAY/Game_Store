@@ -1,6 +1,8 @@
 # Game Store
 
-![Game Store Banner](assets/banner.svg)
+<p align="center">
+  <img src="assets/banner.svg" alt="Game Store Banner" width="100%">
+</p>
 
 ![PHP](https://img.shields.io/badge/PHP-8.x-777BB4?style=for-the-badge&logo=php&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
