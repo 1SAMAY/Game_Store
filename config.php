@@ -46,21 +46,11 @@ function app_db_connection_url(): string
     $db = app_db_config();
 
     $password = (string) $db['password'];
-    $mode = strtolower((string) $db['pooler_mode']);
 
-    if ($password !== '' && in_array($mode, ['session', 'transaction'], true)) {
+    if ($password !== '') {
         $projectRef = (string) $db['project_ref'];
         $region = (string) $db['region'];
         $encodedPassword = rawurlencode($password);
-
-        if ($mode === 'transaction') {
-            return sprintf(
-                'postgres://postgres:%s@db.%s.supabase.co:6543/postgres?sslmode=%s',
-                $encodedPassword,
-                $projectRef,
-                rawurlencode((string) $db['sslmode'])
-            );
-        }
 
         return sprintf(
             'postgres://postgres.%s:%s@aws-0-%s.pooler.supabase.com:5432/postgres?sslmode=%s',
