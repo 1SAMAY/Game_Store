@@ -106,7 +106,11 @@ class AppDatabase
     {
         $db = app_db_config();
         try {
-            if ($db['driver'] === 'pgsql') {
+            if (!empty($db['url'])) {
+                $dsn = $this->dsnFromUrl($db['url']);
+                $username = rawurldecode((string) parse_url($db['url'], PHP_URL_USER));
+                $password = rawurldecode((string) parse_url($db['url'], PHP_URL_PASS));
+            } elseif ($db['driver'] === 'pgsql') {
                 $dsn = sprintf(
                     'pgsql:host=%s;port=%d;dbname=%s;sslmode=%s',
                     $db['host'],
@@ -114,6 +118,8 @@ class AppDatabase
                     $db['database'],
                     $db['sslmode']
                 );
+                $username = $db['username'];
+                $password = $db['password'];
             } else {
                 $dsn = sprintf(
                     '%s:host=%s;port=%d;dbname=%s;charset=%s',
@@ -123,9 +129,11 @@ class AppDatabase
                     $db['database'],
                     $db['charset']
                 );
+                $username = $db['username'];
+                $password = $db['password'];
             }
 
-            $this->pdo = new PDO($dsn, $db['username'], $db['password'], [
+            $this->pdo = new PDO($dsn, $username, $password, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             ]);
@@ -177,6 +185,34 @@ class AppDatabase
             ["\\\\", "\\0", "\\n", "\\r", "\\Z", "''", '""'],
             $value
         );
+    }
+
+    private function dsnFromUrl(string $url): string
+    {
+        $parts = parse_url($url);
+        if (!$parts || empty($parts['scheme']) || empty($parts['host'])) {
+            throw new RuntimeException('Invalid DATABASE_URL');
+        }
+
+        $scheme = $parts['scheme'];
+        $host = $parts['host'];
+        $port = isset($parts['port']) ? (int) $parts['port'] : 5432;
+        $path = isset($parts['path']) ? ltrim($parts['path'], '/') : '';
+        $query = [];
+        if (!empty($parts['query'])) {
+            parse_str($parts['query'], $query);
+        }
+
+        if ($scheme === 'postgres' || $scheme === 'postgresql') {
+            $scheme = 'pgsql';
+        }
+
+        $dsn = sprintf('%s:host=%s;port=%d;dbname=%s', $scheme, $host, $port, $path ?: 'postgres');
+        if (!empty($query['sslmode'])) {
+            $dsn .= ';sslmode=' . $query['sslmode'];
+        }
+
+        return $dsn;
     }
 }
 

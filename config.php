@@ -27,6 +27,7 @@ function app_db_config(): array
 
     return [
         'driver' => (string) app_env('DB_DRIVER', 'pgsql'),
+        'url' => (string) app_env('DATABASE_URL', ''),
         'host' => (string) app_env('DB_HOST', $defaultHost),
         'port' => (int) app_env('DB_PORT', 5432),
         'database' => (string) app_env('DB_NAME', 'postgres'),

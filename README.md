@@ -119,6 +119,7 @@ Copy `.env.example` to your own environment file and set:
 
 - `APP_BASE_URL` to your live site URL
 - `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`
+- Best option: set `DATABASE_URL` to the Supabase **session pooler** connection string from the Dashboard `Connect` panel
 - Optional: `SUPABASE_PROJECT_REF` if you want the host to be derived automatically
 
 Important: the app is still PHP-rendered. Render can host it as the live web app using Docker, and Supabase is now the database layer.
@@ -178,6 +179,7 @@ Add your best project screenshots here to make the repository look more professi
 - If trailer files do not appear after cloning, make sure Git LFS is installed.
 - If deployed links still point to localhost, check `APP_BASE_URL`.
 - If the live site cannot connect to the database, confirm `DB_HOST`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD` match your Supabase connection details.
+- If you see `Network is unreachable`, use the Supabase **session pooler** connection string in `DATABASE_URL` instead of the direct host.
 - If the host is still `localhost`, set `DB_HOST` to your Supabase database host or set `SUPABASE_PROJECT_REF`.
 - If Render says `php: command not found`, recreate the service as a Docker-based web service using this repo's `Dockerfile`.
 
