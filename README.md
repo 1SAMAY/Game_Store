@@ -121,7 +121,7 @@ Copy `.env.example` to your own environment file and set:
 - `DB_PASSWORD`
 - Optional: `SUPABASE_PROJECT_REF` and `SUPABASE_REGION` if you want the app to build the Supabase pooler URL automatically
 - Optional: `SUPABASE_POOLER_MODE=session` is the safest default for Render
-- `DATABASE_URL` is still supported, but the app now prefers the Supabase pooler settings when the password is present
+- `DATABASE_URL` is still supported and overrides the auto-built pooler URL when set
 
 Important: the app is still PHP-rendered. Render can host it as the live web app using Docker, and Supabase is now the database layer.
 

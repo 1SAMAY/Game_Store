@@ -13,3 +13,5 @@ services:
         value: gcshwfphrgpzvzmosvzf
       - key: SUPABASE_REGION
         value: ap-southeast-1
+      - key: SUPABASE_POOLER_MODE
+        value: session
