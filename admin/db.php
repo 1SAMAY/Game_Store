@@ -1,15 +1,5 @@
 <?php
-$host = "localhost";
-$username = "root";
-$password = "";
-$database = "game_store";
-
-$conn = new mysqli($host, $username, $password, $database);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-$conn->set_charset("utf8mb4");
+require_once dirname(__DIR__) . '/db.php';
 
 // Helper: Check admin session
 function is_admin() {

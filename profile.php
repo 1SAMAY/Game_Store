@@ -41,10 +41,22 @@ $user = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
 $stats = [
-    'library' => (int) ($conn->query("SELECT COUNT(*) AS total FROM library WHERE user_id = {$userId}")->fetch_assoc()['total'] ?? 0),
-    'wishlist' => (int) ($conn->query("SELECT COUNT(*) AS total FROM wishlist WHERE user_id = {$userId}")->fetch_assoc()['total'] ?? 0),
-    'reviews' => (int) ($conn->query("SELECT COUNT(*) AS total FROM reviews WHERE user_id = {$userId}")->fetch_assoc()['total'] ?? 0),
+    'library' => 0,
+    'wishlist' => 0,
+    'reviews' => 0,
 ];
+
+foreach (['library', 'wishlist', 'reviews'] as $table) {
+    $countStmt = $conn->prepare("SELECT COUNT(*) AS total FROM {$table} WHERE user_id = ?");
+    if ($countStmt) {
+        $countStmt->bind_param('i', $userId);
+        $countStmt->execute();
+        $countResult = $countStmt->get_result();
+        $countRow = $countResult ? $countResult->fetch_assoc() : null;
+        $stats[$table] = (int) ($countRow['total'] ?? 0);
+        $countStmt->close();
+    }
+}
 
 $recentStmt = $conn->prepare(
     "SELECT g.id, g.title, g.image, rv.viewed_at

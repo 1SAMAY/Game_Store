@@ -22,11 +22,8 @@ ini_set('display_errors', 1);
 require_once "app_helpers.php";
 require_once "db.php";
 
-// ---------- DB config (edit if needed) ----------
-$dbHost = '127.0.0.1';
-$dbName = 'game_store';
-$dbUser = 'root';
-$dbPass = ''; // change if you have a password
+// ---------- DB config ----------
+$dbConfig = app_db_config();
 
 // ---------- helpers ----------
 function safe($val) { return htmlspecialchars((string)$val, ENT_QUOTES, 'UTF-8'); }
@@ -91,10 +88,21 @@ $gameTitle = isset($_GET['title']) ? urldecode($_GET['title']) : null;
 // ---------- try connect to DB ----------
 $pdo = null;
 try {
-    $pdo = new PDO("mysql:host=$dbHost;dbname=$dbName;charset=utf8mb4", $dbUser, $dbPass, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-    ]);
+    $pdo = new PDO(
+        sprintf(
+            "pgsql:host=%s;port=%d;dbname=%s;sslmode=%s",
+            $dbConfig['host'],
+            $dbConfig['port'],
+            $dbConfig['database'],
+            $dbConfig['sslmode']
+        ),
+        $dbConfig['username'],
+        $dbConfig['password'],
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        ]
+    );
 } catch (Throwable $e) {
     $pdo = null;
 }

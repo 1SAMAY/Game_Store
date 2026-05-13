@@ -1,9 +1,5 @@
 <?php
-// all_games.php
-$conn = new mysqli("localhost", "root", "", "game_store");
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once "db.php";
 
 $added = isset($_GET['added']) ? intval($_GET['added']) : 0;
 $exists = isset($_GET['exists']) ? intval($_GET['exists']) : 0;

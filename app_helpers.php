@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/config.php';
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -51,12 +53,13 @@ function app_escape($value): string
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 }
 
-function app_track_recent_view(mysqli $conn, int $userId, int $gameId): void
+function app_track_recent_view($conn, int $userId, int $gameId): void
 {
     $stmt = $conn->prepare(
         "INSERT INTO recently_viewed (user_id, game_id, viewed_at)
          VALUES (?, ?, NOW())
-         ON DUPLICATE KEY UPDATE viewed_at = VALUES(viewed_at)"
+         ON CONFLICT (user_id, game_id)
+         DO UPDATE SET viewed_at = EXCLUDED.viewed_at"
     );
 
     if ($stmt) {
@@ -66,7 +69,7 @@ function app_track_recent_view(mysqli $conn, int $userId, int $gameId): void
     }
 }
 
-function app_user_pref_theme(mysqli $conn, int $userId): string
+function app_user_pref_theme($conn, int $userId): string
 {
     $stmt = $conn->prepare("SELECT theme_preference FROM users WHERE id = ? LIMIT 1");
     if (!$stmt) {
@@ -83,7 +86,7 @@ function app_user_pref_theme(mysqli $conn, int $userId): string
     return in_array($theme, ['dark', 'light'], true) ? $theme : 'dark';
 }
 
-function app_set_user_pref_theme(mysqli $conn, int $userId, string $theme): void
+function app_set_user_pref_theme($conn, int $userId, string $theme): void
 {
     if (!in_array($theme, ['dark', 'light'], true)) {
         return;
@@ -97,7 +100,7 @@ function app_set_user_pref_theme(mysqli $conn, int $userId, string $theme): void
     }
 }
 
-function app_add_notification(mysqli $conn, int $userId, string $title, string $message, string $type = 'info', ?string $link = null): void
+function app_add_notification($conn, int $userId, string $title, string $message, string $type = 'info', ?string $link = null): void
 {
     $stmt = $conn->prepare(
         "INSERT INTO notifications (user_id, title, message, type, link) VALUES (?, ?, ?, ?, ?)"
@@ -110,7 +113,7 @@ function app_add_notification(mysqli $conn, int $userId, string $title, string $
     }
 }
 
-function app_unread_notification_count(mysqli $conn, int $userId): int
+function app_unread_notification_count($conn, int $userId): int
 {
     $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM notifications WHERE user_id = ? AND is_read = 0");
     if (!$stmt) {
@@ -125,7 +128,7 @@ function app_unread_notification_count(mysqli $conn, int $userId): int
     return isset($row['total']) ? (int) $row['total'] : 0;
 }
 
-function app_create_auth_token(mysqli $conn, int $userId, string $purpose, int $minutes = 60): string
+function app_create_auth_token($conn, int $userId, string $purpose, int $minutes = 60): string
 {
     $token = bin2hex(random_bytes(32));
     $hash = hash('sha256', $token);
@@ -143,7 +146,7 @@ function app_create_auth_token(mysqli $conn, int $userId, string $purpose, int $
     return $token;
 }
 
-function app_consume_auth_token(mysqli $conn, string $token, string $purpose): ?array
+function app_consume_auth_token($conn, string $token, string $purpose): ?array
 {
     $hash = hash('sha256', $token);
     $stmt = $conn->prepare(
@@ -176,7 +179,7 @@ function app_consume_auth_token(mysqli $conn, string $token, string $purpose): ?
     return $row;
 }
 
-function app_fetch_auth_token(mysqli $conn, string $token, string $purpose): ?array
+function app_fetch_auth_token($conn, string $token, string $purpose): ?array
 {
     $hash = hash('sha256', $token);
     $stmt = $conn->prepare(

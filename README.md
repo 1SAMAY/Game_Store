@@ -93,10 +93,10 @@ It includes browsing, game details, wishlist and library management, user profil
 
 ## Quick Start
 
-1. Copy the project folder into your XAMPP web root.
-2. Start Apache and MySQL in XAMPP.
-3. Open `setup_database.php` in your browser once to create or upgrade the database tables.
-4. Open the project in your browser.
+1. Create the Supabase database using `supabase_schema.sql`.
+2. Add the Render environment variables from `.env.example`.
+3. Deploy the PHP app to Render.
+4. Open the Render URL in your browser.
 
 Example local URL:
 
@@ -106,12 +106,23 @@ http://localhost/Game_Store/
 
 ## Live Demo
 
-This project is currently set up for local XAMPP use, so the demo runs on your own machine.
+This project is meant to run on Render with Supabase as the database.
 
-- Local demo: `http://localhost/Game_Store/`
-- Public live demo: not deployed yet
+- Live app: your Render URL
+- Database: your Supabase project
 
-If you publish the site later, replace this section with your hosted URL.
+## Deployment Notes
+
+This repo now reads its database settings and public base URL from environment variables.
+
+Copy `.env.example` to your own environment file and set:
+
+- `APP_BASE_URL` to your live site URL
+- `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`
+
+Important: the app is still PHP-rendered. Render can host it as the live web app, and Supabase is now the database layer.
+
+Vercel is not the right primary host for this PHP codebase unless we rewrite the frontend into a JavaScript app.
 
 ## Default Admin Login
 
@@ -160,9 +171,10 @@ Add your best project screenshots here to make the repository look more professi
 
 ## Troubleshooting
 
-- If the profile page shows a missing column error, run `setup_database.php` again.
+- If the profile page shows a missing column error, re-run `supabase_schema.sql`.
 - If trailer files do not appear after cloning, make sure Git LFS is installed.
-- If login does not work, confirm Apache and MySQL are running in XAMPP.
+- If deployed links still point to localhost, check `APP_BASE_URL`.
+- If the live site cannot connect to the database, confirm `DB_HOST`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD` match your Supabase connection details.
 
 ## License
 

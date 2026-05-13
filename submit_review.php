@@ -30,7 +30,10 @@ if ($reviewText === '') {
 $stmt = $conn->prepare(
     "INSERT INTO reviews (game_id, user_id, rating, review_text)
      VALUES (?, ?, ?, ?)
-     ON DUPLICATE KEY UPDATE rating = VALUES(rating), review_text = VALUES(review_text), updated_at = CURRENT_TIMESTAMP"
+     ON CONFLICT (game_id, user_id)
+     DO UPDATE SET rating = EXCLUDED.rating,
+                   review_text = EXCLUDED.review_text,
+                   updated_at = CURRENT_TIMESTAMP"
 );
 
 if ($stmt) {

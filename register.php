@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     if ($stmt->execute()) {
                         $userId = $stmt->insert_id;
                         $token = app_create_auth_token($conn, $userId, 'email_verify', 1440);
-                        $verificationLink = "http://localhost/Game_Store/verify_email.php?token=" . urlencode($token);
+                        $verificationLink = app_base_url() . "/verify_email.php?token=" . urlencode($token);
                         $msg = "Registration successful! Verify your email using the link below.";
                     } else {
                         $msg = "Error: " . $stmt->error;

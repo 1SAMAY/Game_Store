@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($user) {
                 $token = app_create_auth_token($conn, (int) $user['id'], 'password_reset', 60);
-                $resetLink = "http://localhost/Game_Store/reset_password.php?token=" . urlencode($token);
+                $resetLink = app_base_url() . "/reset_password.php?token=" . urlencode($token);
                 $message = 'Password reset link created. Open it to set a new password.';
                 app_add_notification($conn, (int) $user['id'], 'Password reset requested', 'A password reset link was created for your account.', 'warning', 'reset_password.php?token=' . urlencode($token));
             } else {

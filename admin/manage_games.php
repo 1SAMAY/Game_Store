@@ -5,15 +5,29 @@ require_admin();
 
 if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     $game_id = intval($_GET['delete']);
-    $result = $conn->query('SELECT image FROM games WHERE id = ' . $game_id);
-    if ($row = $result->fetch_assoc()) {
+    $stmt = $conn->prepare('SELECT image FROM games WHERE id = ?');
+    if ($stmt) {
+        $stmt->bind_param('i', $game_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result ? $result->fetch_assoc() : null;
+        $stmt->close();
+    } else {
+        $row = null;
+    }
+    if ($row) {
         $image_path = $row['image'];
         $full_path = dirname(__DIR__) . '/' . str_replace('/', DIRECTORY_SEPARATOR, $image_path);
         if (is_file($full_path)) {
             unlink($full_path);
         }
     }
-    $conn->query('DELETE FROM games WHERE id = ' . $game_id);
+    $deleteStmt = $conn->prepare('DELETE FROM games WHERE id = ?');
+    if ($deleteStmt) {
+        $deleteStmt->bind_param('i', $game_id);
+        $deleteStmt->execute();
+        $deleteStmt->close();
+    }
     header('Location: manage_games.php?msg=deleted');
     exit();
 }

@@ -5,27 +5,27 @@ require_admin();
 
 $msg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title = $conn->real_escape_string($_POST['title']);
-    $price = $conn->real_escape_string($_POST['price']);
-    $category = $conn->real_escape_string($_POST['category']);
+    $title = trim($_POST['title'] ?? '');
+    $price = trim($_POST['price'] ?? '');
+    $category = trim($_POST['category'] ?? '');
 
     $description = $_POST['description'] === 'Custom' && !empty($_POST['description_custom'])
-        ? $conn->real_escape_string($_POST['description_custom'])
-        : $conn->real_escape_string($_POST['description']);
+        ? trim($_POST['description_custom'])
+        : trim($_POST['description'] ?? '');
 
-    $media_url = $conn->real_escape_string($_POST['media_url']);
+    $media_url = trim($_POST['media_url'] ?? '');
 
     $min_req = $_POST['min_requirement'] === 'Custom' && !empty($_POST['min_requirement_custom'])
-        ? $conn->real_escape_string($_POST['min_requirement_custom'])
-        : $conn->real_escape_string($_POST['min_requirement']);
+        ? trim($_POST['min_requirement_custom'])
+        : trim($_POST['min_requirement'] ?? '');
 
     $max_req = $_POST['max_requirement'] === 'Custom' && !empty($_POST['max_requirement_custom'])
-        ? $conn->real_escape_string($_POST['max_requirement_custom'])
-        : $conn->real_escape_string($_POST['max_requirement']);
+        ? trim($_POST['max_requirement_custom'])
+        : trim($_POST['max_requirement'] ?? '');
 
     $story = $_POST['story'] === 'Custom' && !empty($_POST['story_custom'])
-        ? $conn->real_escape_string($_POST['story_custom'])
-        : $conn->real_escape_string($_POST['story']);
+        ? trim($_POST['story_custom'])
+        : trim($_POST['story'] ?? '');
 
     $rating = isset($_POST['rating']) ? floatval($_POST['rating']) : 0;
     $imagePath = '';

@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: game-store-backend
+    env: php
+    buildCommand: ""
+    startCommand: php -S 0.0.0.0:$PORT -t .
+    autoDeploy: true
+    envVars:
+      - key: APP_BASE_URL
+        sync: false
+      - key: DB_DRIVER
+        value: pgsql
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "5432"
+      - key: DB_NAME
+        value: postgres
+      - key: DB_USER
+        value: postgres
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_CHARSET
+        value: utf8mb4
+      - key: DB_SSLMODE
+        value: require

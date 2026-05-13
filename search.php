@@ -1,12 +1,13 @@
 <?php
-$conn = new mysqli("localhost", "root", "", "game_store");
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once "db.php";
 
-$query = isset($_GET['query']) ? $conn->real_escape_string($_GET['query']) : '';
-$sql = "SELECT * FROM games WHERE title LIKE '%$query%'";
-$result = $conn->query($sql);
+$query = trim($_GET['query'] ?? '');
+$sql = "SELECT * FROM games WHERE title ILIKE ?";
+$stmt = $conn->prepare($sql);
+$term = '%' . $query . '%';
+$stmt->bind_param('s', $term);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>

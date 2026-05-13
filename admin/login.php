@@ -5,14 +5,18 @@ require_once "db.php";
 
 $error = '';
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $username = $conn->real_escape_string($_POST['username']);
+    $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'];
 
-    $sql = "SELECT * FROM users WHERE username = '$username' AND role = 'admin' LIMIT 1";
-    $result = $conn->query($sql);
-    if ($result && $result->num_rows === 1) {
-        $admin = $result->fetch_assoc();
-        if (password_verify($password, $admin['password'])) {
+    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ? AND role = 'admin' LIMIT 1");
+    if ($stmt) {
+        $stmt->bind_param('s', $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $admin = $result ? $result->fetch_assoc() : null;
+        $stmt->close();
+
+        if ($admin && password_verify($password, $admin['password'])) {
             $_SESSION['admin_id'] = $admin['id'];
             $_SESSION['admin_user'] = $admin['username'];
             $_SESSION['admin_role'] = $admin['role'];

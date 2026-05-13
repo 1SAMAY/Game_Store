@@ -35,7 +35,8 @@ if (!$ownerResult || $ownerResult->num_rows === 0) {
 $stmt = $conn->prepare(
     "INSERT INTO collection_items (collection_id, game_id)
      VALUES (?, ?)
-     ON DUPLICATE KEY UPDATE added_at = CURRENT_TIMESTAMP"
+     ON CONFLICT (collection_id, game_id)
+     DO UPDATE SET added_at = CURRENT_TIMESTAMP"
 );
 
 if ($stmt) {

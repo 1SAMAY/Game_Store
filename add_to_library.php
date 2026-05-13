@@ -15,13 +15,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['game_id'])) {
   $check_stmt->execute();
   $check_result = $check_stmt->get_result();
 
-  if (mysqli_num_rows($check_result) > 0) {
+  if ($check_result && $check_result->num_rows > 0) {
     // Optional: check if already in library
     $check_lib = $conn->prepare("SELECT id FROM library WHERE user_id = ? AND game_id = ?");
     $check_lib->bind_param("ii", $user_id, $game_id);
     $check_lib->execute();
     $check_lib_result = $check_lib->get_result();
-    if (mysqli_num_rows($check_lib_result) == 0) {
+    if (!$check_lib_result || $check_lib_result->num_rows == 0) {
       // Insert into library
       $insert_query = $conn->prepare("INSERT INTO library (user_id, game_id) VALUES (?, ?)");
       $insert_query->bind_param("ii", $user_id, $game_id);

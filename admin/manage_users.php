@@ -7,14 +7,33 @@ $msg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $uid = intval($_POST['user_id']);
     if (isset($_POST['block'])) {
-        // Block user: e.g., set role to 'blocked'
-        $conn->query("UPDATE users SET role='blocked' WHERE id=$uid");
+        $stmt = $conn->prepare("UPDATE users SET role='blocked' WHERE id = ?");
+        if ($stmt) {
+            $stmt->bind_param('i', $uid);
+            $stmt->execute();
+            $stmt->close();
+        }
     } elseif (isset($_POST['unblock'])) {
-        $conn->query("UPDATE users SET role='user' WHERE id=$uid");
+        $stmt = $conn->prepare("UPDATE users SET role='user' WHERE id = ?");
+        if ($stmt) {
+            $stmt->bind_param('i', $uid);
+            $stmt->execute();
+            $stmt->close();
+        }
     } elseif (isset($_POST['promote'])) {
-        $conn->query("UPDATE users SET role='admin' WHERE id=$uid");
+        $stmt = $conn->prepare("UPDATE users SET role='admin' WHERE id = ?");
+        if ($stmt) {
+            $stmt->bind_param('i', $uid);
+            $stmt->execute();
+            $stmt->close();
+        }
     } elseif (isset($_POST['delete'])) {
-        $conn->query("DELETE FROM users WHERE id=$uid");
+        $stmt = $conn->prepare("DELETE FROM users WHERE id = ?");
+        if ($stmt) {
+            $stmt->bind_param('i', $uid);
+            $stmt->execute();
+            $stmt->close();
+        }
     }
     $msg = "Action performed.";
 }

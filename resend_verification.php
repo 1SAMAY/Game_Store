@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $message = 'This account is already verified. You can log in now.';
                 } else {
                     $token = app_create_auth_token($conn, (int) $user['id'], 'email_verify', 1440);
-                    $verificationLink = "http://localhost/Game_Store/verify_email.php?token=" . urlencode($token);
+                    $verificationLink = app_base_url() . "/verify_email.php?token=" . urlencode($token);
                     $message = 'Verification link created. Open it to verify your account.';
                     app_add_notification($conn, (int) $user['id'], 'Verification requested', 'A new email verification link was created for your account.', 'info', 'verify_email.php?token=' . urlencode($token));
                 }

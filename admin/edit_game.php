@@ -17,14 +17,14 @@ $stmt->close();
 if (!$game) { echo 'Game not found.'; exit(); }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title = $conn->real_escape_string($_POST['title']);
-    $price = $conn->real_escape_string($_POST['price']);
-    $category = $conn->real_escape_string($_POST['category']);
-    $description = $conn->real_escape_string($_POST['description']);
-    $media_url = $conn->real_escape_string($_POST['media_url']);
-    $min_req = $conn->real_escape_string($_POST['min_requirement']);
-    $max_req = $conn->real_escape_string($_POST['max_requirement']);
-    $story = $conn->real_escape_string($_POST['story']);
+    $title = trim($_POST['title'] ?? '');
+    $price = trim($_POST['price'] ?? '');
+    $category = trim($_POST['category'] ?? '');
+    $description = trim($_POST['description'] ?? '');
+    $media_url = trim($_POST['media_url'] ?? '');
+    $min_req = trim($_POST['min_requirement'] ?? '');
+    $max_req = trim($_POST['max_requirement'] ?? '');
+    $story = trim($_POST['story'] ?? '');
     $rating = floatval($_POST['rating']);
 
     $imagePath = $game['image'];
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $sql = 'UPDATE games SET title=?, price=?, category=?, description=?, image=?, media_url=?, min_requirement=?, max_requirement=?, story=?, rating=? WHERE id=?';
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param('sssssssssdii', $title, $price, $category, $description, $imagePath, $media_url, $min_req, $max_req, $story, $rating, $id);
+    $stmt->bind_param('sssssssssdi', $title, $price, $category, $description, $imagePath, $media_url, $min_req, $max_req, $story, $rating, $id);
     if ($stmt->execute()) {
         $msg = 'Game updated!';
         header('Location: dashboard.php?msg=updated');
