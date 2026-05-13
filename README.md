@@ -120,9 +120,11 @@ Copy `.env.example` to your own environment file and set:
 - `APP_BASE_URL` to your live site URL
 - `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`
 
-Important: the app is still PHP-rendered. Render can host it as the live web app, and Supabase is now the database layer.
+Important: the app is still PHP-rendered. Render can host it as the live web app using Docker, and Supabase is now the database layer.
 
 Vercel is not the right primary host for this PHP codebase unless we rewrite the frontend into a JavaScript app.
+
+On Render, the service needs to run from the repo's `Dockerfile`, not the native PHP runtime.
 
 ## Default Admin Login
 
@@ -175,6 +177,7 @@ Add your best project screenshots here to make the repository look more professi
 - If trailer files do not appear after cloning, make sure Git LFS is installed.
 - If deployed links still point to localhost, check `APP_BASE_URL`.
 - If the live site cannot connect to the database, confirm `DB_HOST`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD` match your Supabase connection details.
+- If Render says `php: command not found`, recreate the service as a Docker-based web service using this repo's `Dockerfile`.
 
 ## License
 
