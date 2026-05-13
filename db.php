@@ -106,10 +106,11 @@ class AppDatabase
     {
         $db = app_db_config();
         try {
-            if (!empty($db['url'])) {
-                $dsn = $this->dsnFromUrl($db['url']);
-                $username = rawurldecode((string) parse_url($db['url'], PHP_URL_USER));
-                $password = rawurldecode((string) parse_url($db['url'], PHP_URL_PASS));
+            $connectionUrl = app_db_connection_url();
+            if (!empty($connectionUrl)) {
+                $dsn = $this->dsnFromUrl($connectionUrl);
+                $username = rawurldecode((string) parse_url($connectionUrl, PHP_URL_USER));
+                $password = rawurldecode((string) parse_url($connectionUrl, PHP_URL_PASS));
             } elseif ($db['driver'] === 'pgsql') {
                 $dsn = sprintf(
                     'pgsql:host=%s;port=%d;dbname=%s;sslmode=%s',

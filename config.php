@@ -35,5 +35,45 @@ function app_db_config(): array
         'password' => (string) app_env('DB_PASSWORD', ''),
         'charset' => (string) app_env('DB_CHARSET', 'utf8mb4'),
         'sslmode' => (string) app_env('DB_SSLMODE', 'require'),
+        'project_ref' => $projectRef,
+        'region' => (string) app_env('SUPABASE_REGION', 'ap-southeast-1'),
+        'pooler_mode' => (string) app_env('SUPABASE_POOLER_MODE', 'session'),
     ];
+}
+
+function app_db_connection_url(): string
+{
+    $db = app_db_config();
+
+    $password = (string) $db['password'];
+    $mode = strtolower((string) $db['pooler_mode']);
+
+    if ($password !== '' && in_array($mode, ['session', 'transaction'], true)) {
+        $projectRef = (string) $db['project_ref'];
+        $region = (string) $db['region'];
+        $encodedPassword = rawurlencode($password);
+
+        if ($mode === 'transaction') {
+            return sprintf(
+                'postgres://postgres:%s@db.%s.supabase.co:6543/postgres?sslmode=%s',
+                $encodedPassword,
+                $projectRef,
+                rawurlencode((string) $db['sslmode'])
+            );
+        }
+
+        return sprintf(
+            'postgres://postgres.%s:%s@aws-0-%s.pooler.supabase.com:5432/postgres?sslmode=%s',
+            $projectRef,
+            $encodedPassword,
+            $region,
+            rawurlencode((string) $db['sslmode'])
+        );
+    }
+
+    if (!empty($db['url'])) {
+        return $db['url'];
+    }
+
+    return '';
 }

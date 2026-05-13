@@ -118,9 +118,10 @@ This repo now reads its database settings and public base URL from environment v
 Copy `.env.example` to your own environment file and set:
 
 - `APP_BASE_URL` to your live site URL
-- `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`
-- Best option: set `DATABASE_URL` to the Supabase **session pooler** connection string from the Dashboard `Connect` panel
-- Optional: `SUPABASE_PROJECT_REF` if you want the host to be derived automatically
+- `DB_PASSWORD`
+- Optional: `SUPABASE_PROJECT_REF` and `SUPABASE_REGION` if you want the app to build the Supabase pooler URL automatically
+- Optional: `SUPABASE_POOLER_MODE=session` is the safest default for Render
+- `DATABASE_URL` is still supported, but the app now prefers the Supabase pooler settings when the password is present
 
 Important: the app is still PHP-rendered. Render can host it as the live web app using Docker, and Supabase is now the database layer.
 
@@ -178,9 +179,9 @@ Add your best project screenshots here to make the repository look more professi
 - If the profile page shows a missing column error, re-run `supabase_schema.sql`.
 - If trailer files do not appear after cloning, make sure Git LFS is installed.
 - If deployed links still point to localhost, check `APP_BASE_URL`.
-- If the live site cannot connect to the database, confirm `DB_HOST`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD` match your Supabase connection details.
-- If you see `Network is unreachable`, use the Supabase **session pooler** connection string in `DATABASE_URL` instead of the direct host.
-- If the host is still `localhost`, set `DB_HOST` to your Supabase database host or set `SUPABASE_PROJECT_REF`.
+- If the live site cannot connect to the database, confirm `DB_PASSWORD` is set in Render and that `SUPABASE_PROJECT_REF` matches your Supabase project.
+- If you see `Network is unreachable`, keep `SUPABASE_POOLER_MODE=session` and redeploy so the app uses the IPv4-friendly Supabase pooler.
+- If the host is still `localhost`, set `SUPABASE_PROJECT_REF` or `DB_HOST` to your Supabase database host.
 - If Render says `php: command not found`, recreate the service as a Docker-based web service using this repo's `Dockerfile`.
 
 ## License
