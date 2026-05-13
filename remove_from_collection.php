@@ -10,9 +10,12 @@ $gameId = isset($_POST['game_id']) ? (int) $_POST['game_id'] : 0;
 
 if ($collectionId > 0 && $gameId > 0) {
     $stmt = $conn->prepare(
-        "DELETE ci FROM collection_items ci
-         JOIN collections c ON c.id = ci.collection_id
-         WHERE ci.collection_id = ? AND ci.game_id = ? AND c.user_id = ?"
+        "DELETE FROM collection_items ci
+         USING collections c
+         WHERE c.id = ci.collection_id
+           AND ci.collection_id = ?
+           AND ci.game_id = ?
+           AND c.user_id = ?"
     );
     if ($stmt) {
         $stmt->bind_param('iii', $collectionId, $gameId, $userId);

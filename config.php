@@ -22,9 +22,12 @@ function app_base_url(): string
 
 function app_db_config(): array
 {
+    $projectRef = (string) app_env('SUPABASE_PROJECT_REF', 'gcshwfphrgpzvzmosvzf');
+    $defaultHost = sprintf('db.%s.supabase.co', $projectRef);
+
     return [
         'driver' => (string) app_env('DB_DRIVER', 'pgsql'),
-        'host' => (string) app_env('DB_HOST', 'localhost'),
+        'host' => (string) app_env('DB_HOST', $defaultHost),
         'port' => (int) app_env('DB_PORT', 5432),
         'database' => (string) app_env('DB_NAME', 'postgres'),
         'username' => (string) app_env('DB_USER', 'postgres'),
